@@ -13,6 +13,13 @@ const app = express();
 
 app.use(express.json()); // Body parser
 
+
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/subcategories", subcategoryRoutes);
+app.use("/api/items", itemRoutes);
+app.use("/api/users", userRoutes);
+
 // Mount routes
 app.use("/", (req, res) => {
   res.send(`
@@ -59,13 +66,6 @@ app.use("/", (req, res) => {
     </html>
   `);
 });
-
-
-app.use("/api/auth", authRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/subcategories", subcategoryRoutes);
-app.use("/api/items", itemRoutes);
-app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
