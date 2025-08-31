@@ -12,7 +12,12 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://special-academy-admin-dashboard.vercel.app",
+    credentials: true, // if you need cookies or Authorization headers
+  })
+);
 
 app.use(express.json()); // Body parser
 
