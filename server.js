@@ -12,10 +12,24 @@ connectDB();
 
 const app = express();
 
+const allowedOrigins = [
+  "https://special-academy-admin-dashboard.vercel.app",
+  "http://localhost:5173"
+];
+
 app.use(
   cors({
-    origin: "https://special-academy-admin-dashboard.vercel.app",
-    credentials: true, // if you need cookies or Authorization headers
+    origin: (origin, callback) => {
+      // allow requests with no origin (like curl or mobile apps)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // if using cookies, Authorization headers, etc.
   })
 );
 
