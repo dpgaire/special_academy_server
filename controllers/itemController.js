@@ -4,8 +4,10 @@ const Item = require("../models/Item");
 // @route   POST /api/items
 // @access  Private/Admin
 const createItem = async (req, res) => {
-  const { _id, subcategory_id, title, description, type, youtube_url } = req.body;
-  const file_path = req.file ? req.file.path : null; // For PDF uploads
+  const { _id, subcategory_id, title, description, type, file_path, youtube_url } = req.body;
+  // const file_path = req.file ? req.file.path : null; // For PDF uploads
+  // const file_path = req.file ? req.file.path : null; // For PDF uploads
+
 
   try {
     const item = await Item.create({
