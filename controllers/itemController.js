@@ -28,14 +28,32 @@ const createItem = async (req, res) => {
 // @desc    Get all items
 // @route   GET /api/items
 // @access  Private
+// const getItems = async (req, res) => {
+//   try {
+//     const items = await Item.find({}).populate("subcategory_id");
+//     res.json(items);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 const getItems = async (req, res) => {
   try {
-    const items = await Item.find({}).populate("subcategory_id");
+    const { subcategoryId } = req.query; // or req.params depending on your route
+
+    let filter = {};
+    if (subcategoryId) {
+      filter.subcategory_id = subcategoryId; // only fetch items under this subcategory
+    }
+
+    const items = await Item.find(filter).populate("subcategory_id");
+
     res.json(items);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // @desc    Get item by ID
 // @route   GET /api/items/:id

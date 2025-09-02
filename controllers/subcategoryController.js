@@ -21,14 +21,32 @@ const createSubcategory = async (req, res) => {
 // @desc    Get all subcategories
 // @route   GET /api/subcategories
 // @access  Private
+// const getSubcategories = async (req, res) => {
+//   try {
+//     const subcategories = await Subcategory.find({}).populate("category_id");
+//     res.json(subcategories);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 const getSubcategories = async (req, res) => {
   try {
-    const subcategories = await Subcategory.find({}).populate("category_id");
+    const { categoryId } = req.query; // or req.params depending on your route
+
+    let filter = {};
+    if (categoryId) {
+      filter.category_id = categoryId; // only fetch subcategories under this category
+    }
+
+    const subcategories = await Subcategory.find(filter).populate("category_id");
+
     res.json(subcategories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // @desc    Get subcategory by ID
 // @route   GET /api/subcategories/:id
