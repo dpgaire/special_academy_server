@@ -60,34 +60,32 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    let user;
-    let isHardcodedAdmin = false;
-
-    // Hardcoded admin login
-    if (email === "admin" && password === "admin123") {
-      user = {
-        _id: "admin",
-        fullName: "Admin User",
-        email: "admin",
-        role: "admin",
-      };
-      isHardcodedAdmin = true;
-    } else {
-      user = await User.findOne({ email });
-
-      if (!user || !(await user.matchPassword(password))) {
-        return res.status(401).json({ message: "Invalid email or password" });
-      }
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Verify password
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Generate tokens
     const accessToken = generateToken(user._id, user.role);
     const refreshToken = generateRefreshToken(user._id);
 
-    if (!isHardcodedAdmin) {
-      user.refreshToken = refreshToken;
-      await user.save();
-    }
+    // Save refresh token
+    user.refreshToken = refreshToken;
+    await user.save();
 
+    // Response
     res.json({
       _id: user._id,
       fullName: user.fullName,
@@ -97,9 +95,12 @@ const loginUser = async (req, res) => {
       refreshToken,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 
 const refreshToken = async (req, res) => {
   const { refreshToken: refreshTokenFromBody } = req.body;

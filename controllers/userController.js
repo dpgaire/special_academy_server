@@ -4,6 +4,8 @@ const User = require("../models/User");
 const createUser = async (req, res) => {
   const { _id, fullName, email, password } = req.body;
 
+  console.log('req.body',req.body)
+
   try {
     // Check if user already exists
     const userExists = await User.findOne({ email });
@@ -11,16 +13,12 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     // Create user
     const user = await User.create({
       _id,
       fullName,
       email,
-      password: hashedPassword,
+      password,
     });
 
     if (user) {
@@ -71,7 +69,7 @@ const getUserById = async (req, res) => {
 // @route   PUT /api/users/:id
 // @access  Private/Admin
 const updateUser = async (req, res) => {
-  const { fullName, email, role } = req.body;
+  const { fullName, email, role, password } = req.body;
 
   try {
     const user = await User.findById(req.params.id);
@@ -81,15 +79,33 @@ const updateUser = async (req, res) => {
       user.email = email || user.email;
       user.role = role || user.role;
 
+      // Update password if provided
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      // Update password if provided
+      if (password) {
+        user.password = password; // will be hashed by pre-save hook
+      }
+
       const updatedUser = await user.save();
-      res.json(updatedUser);
+
+      res.json({
+        _id: updatedUser._id,
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        role: updatedUser.role,
+      });
     } else {
       res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Update user error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // @desc    Delete a user
 // @route   DELETE /api/users/:id
