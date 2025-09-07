@@ -69,7 +69,7 @@ const getSubcategoryById = async (req, res) => {
 // @route   PUT /api/subcategories/:id
 // @access  Private/Admin
 const updateSubcategory = async (req, res) => {
-  const { category_id, name } = req.body;
+  const { category_id, name, description } = req.body;
 
   try {
     const subcategory = await Subcategory.findById(req.params.id);
@@ -77,6 +77,7 @@ const updateSubcategory = async (req, res) => {
     if (subcategory) {
       subcategory.category_id = category_id || subcategory.category_id;
       subcategory.name = name || subcategory.name;
+      subcategory.description = description || subcategory.description;
 
       const updatedSubcategory = await subcategory.save();
       res.json(updatedSubcategory);
