@@ -4,16 +4,11 @@ const Item = require("../models/Item");
 // @route   POST /api/items
 // @access  Private/Admin
 const createItem = async (req, res) => {
-  const { _id, subcategory_id, title, description, type, file_path, youtube_url } = req.body;
-  // const file_path = req.file ? req.file.path : null; // For PDF uploads
-  // const file_path = req.file ? req.file.path : null; // For PDF uploads
-
-
+  const { subcategory_id, name, description, type, file_path, youtube_url } = req.body;
   try {
     const item = await Item.create({
-      _id,
       subcategory_id,
-      title,
+      name,
       description,
       type,
       file_path: type === "pdf" ? file_path : undefined,
@@ -28,15 +23,6 @@ const createItem = async (req, res) => {
 // @desc    Get all items
 // @route   GET /api/items
 // @access  Private
-// const getItems = async (req, res) => {
-//   try {
-//     const items = await Item.find({}).populate("subcategory_id");
-//     res.json(items);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 const getItems = async (req, res) => {
   try {
     const { subcategoryId } = req.query; // or req.params depending on your route
@@ -76,7 +62,7 @@ const getItemById = async (req, res) => {
 // @route   PUT /api/items/:id
 // @access  Private/Admin
 const updateItem = async (req, res) => {
-  const { subcategory_id, title, description, type, youtube_url } = req.body;
+  const { subcategory_id, name, description, type, youtube_url } = req.body;
   const file_path = req.file ? req.file.path : null;
 
   try {
@@ -84,7 +70,7 @@ const updateItem = async (req, res) => {
 
     if (item) {
       item.subcategory_id = subcategory_id || item.subcategory_id;
-      item.title = title || item.title;
+      item.name = name || item.name;
       item.description = description || item.description;
       item.type = type || item.type;
 

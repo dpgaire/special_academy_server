@@ -9,11 +9,26 @@ const {
   updateItem,
   deleteItem,
 } = require("../controllers/itemController");
+const { itemValidation } = require("../utils/validation");
 
-router.post("/", protect, authorize(["admin"]), upload.single("file"), createItem);
+router.post(
+  "/",
+  protect,
+  authorize(["admin"]),
+  upload.single("file"),
+  itemValidation,
+  createItem
+);
 router.get("/", protect, getItems);
 router.get("/:id", protect, getItemById);
-router.put("/:id", protect, authorize(["admin"]), upload.single("file"), updateItem);
+router.put(
+  "/:id",
+  protect,
+  authorize(["admin"]),
+  upload.single("file"),
+  itemValidation,
+  updateItem
+);
 router.delete("/:id", protect, authorize(["admin"]), deleteItem);
 
 module.exports = router;

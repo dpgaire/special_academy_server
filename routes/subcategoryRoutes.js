@@ -8,11 +8,24 @@ const {
   updateSubcategory,
   deleteSubcategory,
 } = require("../controllers/subcategoryController");
+const { subcategoryValidation } = require("../utils/validation");
 
-router.post("/", protect, authorize(["admin"]), createSubcategory);
+router.post(
+  "/",
+  protect,
+  authorize(["admin"]),
+  subcategoryValidation,
+  createSubcategory
+);
 router.get("/", protect, getSubcategories);
 router.get("/:id", protect, getSubcategoryById);
-router.put("/:id", protect, authorize(["admin"]), updateSubcategory);
+router.put(
+  "/:id",
+  protect,
+  authorize(["admin"]),
+  subcategoryValidation,
+  updateSubcategory
+);
 router.delete("/:id", protect, authorize(["admin"]), deleteSubcategory);
 
 module.exports = router;

@@ -4,12 +4,12 @@ const Category = require("../models/Category");
 // @route   POST /api/categories
 // @access  Private/Admin
 const createCategory = async (req, res) => {
-  const { _id, name } = req.body;
+  const { name, description } = req.body;
 
   try {
     const category = await Category.create({
-      _id,
       name,
+      description,
     });
     res.status(201).json(category);
   } catch (error) {
@@ -50,13 +50,14 @@ const getCategoryById = async (req, res) => {
 // @route   PUT /api/categories/:id
 // @access  Private/Admin
 const updateCategory = async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
 
   try {
     const category = await Category.findById(req.params.id);
 
     if (category) {
       category.name = name || category.name;
+      category.description = description || category.description;
 
       const updatedCategory = await category.save();
       res.json(updatedCategory);

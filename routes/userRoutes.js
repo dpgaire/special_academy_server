@@ -6,13 +6,17 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-  createUser
+  createUser,
 } = require("../controllers/userController");
+const {
+  registerValidation,
+  updateUserValidation,
+} = require("../utils/validation");
 
 router.get("/", protect, authorize(["admin"]), getUsers);
-router.post("/", protect, authorize(["admin"]), createUser);
+router.post("/", protect, authorize(["admin"]), registerValidation, createUser);
 router.get("/:id", protect, authorize(["admin"]), getUserById);
-router.put("/:id", protect, authorize(["admin"]), updateUser);
+router.put("/:id", protect, authorize(["admin"]), updateUserValidation, updateUser);
 router.delete("/:id", protect, authorize(["admin"]), deleteUser);
 
 module.exports = router;

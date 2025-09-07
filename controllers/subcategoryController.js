@@ -4,13 +4,13 @@ const Subcategory = require("../models/Subcategory");
 // @route   POST /api/subcategories
 // @access  Private/Admin
 const createSubcategory = async (req, res) => {
-  const { _id, category_id, name } = req.body;
+  const { category_id, name, description } = req.body;
 
   try {
     const subcategory = await Subcategory.create({
-      _id,
       category_id,
       name,
+      description,
     });
     res.status(201).json(subcategory);
   } catch (error) {
@@ -39,7 +39,9 @@ const getSubcategories = async (req, res) => {
       filter.category_id = categoryId; // only fetch subcategories under this category
     }
 
-    const subcategories = await Subcategory.find(filter).populate("category_id");
+    const subcategories = await Subcategory.find(filter).populate(
+      "category_id"
+    );
 
     res.json(subcategories);
   } catch (error) {
@@ -47,13 +49,14 @@ const getSubcategories = async (req, res) => {
   }
 };
 
-
 // @desc    Get subcategory by ID
 // @route   GET /api/subcategories/:id
 // @access  Private
 const getSubcategoryById = async (req, res) => {
   try {
-    const subcategory = await Subcategory.findById(req.params.id).populate("category_id");
+    const subcategory = await Subcategory.findById(req.params.id).populate(
+      "category_id"
+    );
 
     if (subcategory) {
       res.json(subcategory);
@@ -69,7 +72,7 @@ const getSubcategoryById = async (req, res) => {
 // @route   PUT /api/subcategories/:id
 // @access  Private/Admin
 const updateSubcategory = async (req, res) => {
-  const { category_id, name } = req.body;
+  const { category_id, name, description } = req.body;
 
   try {
     const subcategory = await Subcategory.findById(req.params.id);
@@ -77,6 +80,7 @@ const updateSubcategory = async (req, res) => {
     if (subcategory) {
       subcategory.category_id = category_id || subcategory.category_id;
       subcategory.name = name || subcategory.name;
+      subcategory.description = description || subcategory.description;
 
       const updatedSubcategory = await subcategory.save();
       res.json(updatedSubcategory);
@@ -113,5 +117,3 @@ module.exports = {
   updateSubcategory,
   deleteSubcategory,
 };
-
-
