@@ -89,6 +89,31 @@ app.use("/", (req, res) => {
   `);
 });
 
+// ✅ 404 handler for unknown routes
+app.use((req, res, next) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
+
+// ✅ Global error handler
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message);
+
+  if (err.message === "CORS_NOT_ALLOWED") {
+    return res.status(403).json({
+      success: false,
+      message: "Origin not allowed by CORS",
+    });
+  }
+
+  res.status(500).json({
+    success: false,
+    message: "Internal server error",
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

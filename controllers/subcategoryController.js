@@ -4,13 +4,13 @@ const Subcategory = require("../models/Subcategory");
 // @route   POST /api/subcategories
 // @access  Private/Admin
 const createSubcategory = async (req, res) => {
-  const { _id, category_id, name } = req.body;
+  const { category_id, name } = req.body;
 
   try {
     const subcategory = await Subcategory.create({
-      _id,
       category_id,
       name,
+      description,
     });
     res.status(201).json(subcategory);
   } catch (error) {

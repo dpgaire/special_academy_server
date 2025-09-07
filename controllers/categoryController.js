@@ -4,12 +4,12 @@ const Category = require("../models/Category");
 // @route   POST /api/categories
 // @access  Private/Admin
 const createCategory = async (req, res) => {
-  const {name,description } = req.body;
+  const { name, description } = req.body;
 
   try {
     const category = await Category.create({
-      description,
       name,
+      description,
     });
     res.status(201).json(category);
   } catch (error) {
