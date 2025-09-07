@@ -4,7 +4,7 @@ const Subcategory = require("../models/Subcategory");
 // @route   POST /api/subcategories
 // @access  Private/Admin
 const createSubcategory = async (req, res) => {
-  const { category_id, name } = req.body;
+  const { category_id, name, description } = req.body;
 
   try {
     const subcategory = await Subcategory.create({
@@ -39,7 +39,9 @@ const getSubcategories = async (req, res) => {
       filter.category_id = categoryId; // only fetch subcategories under this category
     }
 
-    const subcategories = await Subcategory.find(filter).populate("category_id");
+    const subcategories = await Subcategory.find(filter).populate(
+      "category_id"
+    );
 
     res.json(subcategories);
   } catch (error) {
@@ -47,13 +49,14 @@ const getSubcategories = async (req, res) => {
   }
 };
 
-
 // @desc    Get subcategory by ID
 // @route   GET /api/subcategories/:id
 // @access  Private
 const getSubcategoryById = async (req, res) => {
   try {
-    const subcategory = await Subcategory.findById(req.params.id).populate("category_id");
+    const subcategory = await Subcategory.findById(req.params.id).populate(
+      "category_id"
+    );
 
     if (subcategory) {
       res.json(subcategory);
@@ -114,5 +117,3 @@ module.exports = {
   updateSubcategory,
   deleteSubcategory,
 };
-
-

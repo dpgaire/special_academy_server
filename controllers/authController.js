@@ -57,7 +57,6 @@ const generateRefreshToken = (id) => {
 // @access  Public
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-console.log('req login',req.body)
   try {
     // Validate input
     if (!email || !password) {
