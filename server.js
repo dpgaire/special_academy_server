@@ -13,21 +13,29 @@ connectDB();
 const app = express();
 
 const allowedOrigins = [
+  "https://special-academy-admin-dashboard.vercel.app/",
   "https://special-academy-admin-dashboard.vercel.app",
-  "http://localhost:5173"
+  "http://localhost:5173",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow requests with no origin (like curl or mobile apps)
+      // ✅ Allow requests with no origin (mobile apps, curl, Postman, etc.)
       if (!origin) return callback(null, true);
 
+      // ✅ Allow if it's in the explicit whitelist
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
       }
+
+      // ✅ Allow if origin matches your domain (with subdomains if needed)
+      if (origin.endsWith(".special-academy.com")) {
+        return callback(null, true);
+      }
+
+      // ❌ Otherwise, block
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true, // if using cookies, Authorization headers, etc.
   })
