@@ -94,6 +94,12 @@ This is a RESTful API for an special application. It provides endpoints for mana
 *   `PUT /api/items/:id`: Update an item by ID.
 *   `DELETE /api/items/:id`: Delete an item by ID.
 
+## Deployment
+
+This API is deployed on Vercel.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fyour-repo-name)
+
 ## Getting Started
 
 ### Prerequisites

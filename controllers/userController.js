@@ -76,6 +76,10 @@ const updateUser = async (req, res) => {
       user.email = email || user.email;
       user.role = role || user.role;
 
+      if (req.file) {
+        user.image = `${req.file.path}`;
+      }
+
       // Update password if provided
       if (req.body.password) {
         user.password = req.body.password;
@@ -93,6 +97,7 @@ const updateUser = async (req, res) => {
         fullName: updatedUser.fullName,
         email: updatedUser.email,
         role: updatedUser.role,
+        image: updatedUser.image,
       });
     } else {
       res.status(404).json({ message: "User not found" });

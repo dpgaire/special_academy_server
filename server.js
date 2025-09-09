@@ -34,6 +34,7 @@ app.use(
 );
 
 app.use(express.json()); // Body parser
+app.use("/uploads", express.static("uploads"));
 
 
 app.use("/api/auth", authRoutes);
