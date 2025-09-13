@@ -1,17 +1,24 @@
 const Subcategory = require("../models/Subcategory");
+const logActivity = require("../utils/activityLogger");
 
 // @desc    Create a new subcategory
 // @route   POST /api/subcategories
 // @access  Private/Admin
 const createSubcategory = async (req, res) => {
   const { category_id, name, description } = req.body;
-
   try {
     const subcategory = await Subcategory.create({
       category_id,
       name,
       description,
     });
+    await logActivity(
+      req.user.id,
+      "create",
+      "subcategory",
+      subcategory._id,
+      req
+    );
     res.status(201).json(subcategory);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -83,6 +90,13 @@ const updateSubcategory = async (req, res) => {
       subcategory.description = description || subcategory.description;
 
       const updatedSubcategory = await subcategory.save();
+      await logActivity(
+        req.user.id,
+        "update",
+        "subcategory",
+        updatedSubcategory._id,
+        req
+      );
       res.json(updatedSubcategory);
     } else {
       res.status(404).json({ message: "Subcategory not found" });
@@ -101,6 +115,13 @@ const deleteSubcategory = async (req, res) => {
 
     if (subcategory) {
       await subcategory.deleteOne();
+      await logActivity(
+        req.user.id,
+        "delete",
+        "subcategory",
+        req.params.id,
+        req
+      );
       res.json({ message: "Subcategory removed" });
     } else {
       res.status(404).json({ message: "Subcategory not found" });

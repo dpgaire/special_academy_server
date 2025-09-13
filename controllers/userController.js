@@ -1,5 +1,5 @@
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const logActivity = require("../utils/activityLogger");
 
 const createUser = async (req, res) => {
   const { fullName, email, password,role } = req.body;
@@ -19,6 +19,13 @@ const createUser = async (req, res) => {
     });
 
     if (user) {
+        await logActivity(
+        req.user.id,
+        "create",
+        "user",
+        user._id,
+        req
+      );
       res.status(201).json({
         _id: user._id,
         fullName: user.fullName,
@@ -91,7 +98,13 @@ const updateUser = async (req, res) => {
       }
 
       const updatedUser = await user.save();
-
+       await logActivity(
+        req.user.id,
+        "update",
+        "user",
+        req.params.id,
+        req
+      );
       res.json({
         _id: updatedUser._id,
         fullName: updatedUser.fullName,
@@ -118,6 +131,7 @@ const deleteUser = async (req, res) => {
 
     if (user) {
       await user.deleteOne();
+      await logActivity(req.user.id, 'delete', 'user', req.params.id, req);
       res.json({ message: "User removed" });
     } else {
       res.status(404).json({ message: "User not found" });
