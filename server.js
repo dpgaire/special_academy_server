@@ -7,6 +7,8 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const subcategoryRoutes = require("./routes/subcategoryRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
+const activityLogRoutes = require("./routes/activityLogRoutes");
+
 
 connectDB();
 
@@ -44,6 +46,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/subcategories", subcategoryRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/activity-logs", activityLogRoutes);
 
 // Mount routes
 app.use("/", (req, res) => {
@@ -93,7 +96,7 @@ app.use("/", (req, res) => {
 });
 
 // ✅ 404 handler for unknown routes
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
@@ -101,7 +104,7 @@ app.use((req, res, next) => {
 });
 
 // ✅ Global error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error("Error:", err.message);
 
   if (err.message === "CORS_NOT_ALLOWED") {
@@ -125,4 +128,3 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
 module.exports = app;
-

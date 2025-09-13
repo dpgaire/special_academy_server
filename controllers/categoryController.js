@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const logActivity = require("../utils/activityLogger");
 
 // @desc    Create a new category
 // @route   POST /api/categories
@@ -11,6 +12,13 @@ const createCategory = async (req, res) => {
       name,
       description,
     });
+      await logActivity(
+      req.user.id,
+      "create",
+      "category",
+      category._id,
+      req
+    );
     res.status(201).json(category);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -58,8 +66,8 @@ const updateCategory = async (req, res) => {
     if (category) {
       category.name = name || category.name;
       category.description = description || category.description;
-
       const updatedCategory = await category.save();
+      await logActivity(req.user.id, 'update', 'category', updatedCategory._id, req);
       res.json(updatedCategory);
     } else {
       res.status(404).json({ message: "Category not found" });
@@ -78,6 +86,7 @@ const deleteCategory = async (req, res) => {
 
     if (category) {
       await category.deleteOne();
+      await logActivity(req.user.id, 'delete', 'category', req.params.id, req);
       res.json({ message: "Category removed" });
     } else {
       res.status(404).json({ message: "Category not found" });
@@ -94,5 +103,3 @@ module.exports = {
   updateCategory,
   deleteCategory,
 };
-
-

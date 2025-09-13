@@ -1,4 +1,5 @@
 const Item = require("../models/Item");
+const logActivity = require("../utils/activityLogger");
 
 // @desc    Create a new item
 // @route   POST /api/items
@@ -14,6 +15,7 @@ const createItem = async (req, res) => {
       file_path: type === "pdf" ? file_path : undefined,
       youtube_url: type === "youtube_url" ? youtube_url : undefined,
     });
+    await logActivity(req.user.id, 'create', 'item', item._id, req);
     res.status(201).json(item);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -83,6 +85,7 @@ const updateItem = async (req, res) => {
       }
 
       const updatedItem = await item.save();
+      await logActivity(req.user.id, 'update', 'item', item._id, req);
       res.json(updatedItem);
     } else {
       res.status(404).json({ message: "Item not found" });
@@ -101,6 +104,7 @@ const deleteItem = async (req, res) => {
 
     if (item) {
       await item.deleteOne();
+      await logActivity(req.user.id, 'delete', 'item', req.params.id, req);
       res.json({ message: "Item removed" });
     } else {
       res.status(404).json({ message: "Item not found" });

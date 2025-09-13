@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const ActivityLog = require("../models/ActivityLog");
+const useragent = require("useragent");
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "1h" });
@@ -44,7 +45,8 @@ const registerUser = async (req, res) => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Register user error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -82,6 +84,17 @@ const loginUser = async (req, res) => {
     // Save refresh token
     user.refreshToken = refreshToken;
     await user.save();
+
+    // Log activity
+    const log = new ActivityLog({
+      adminId: user._id,
+      action: "login",
+      entity: "user",
+      entityId: user._id,
+      device: useragent.parse(req.headers["user-agent"]).toString(),
+      ipAddress: req.ip,
+    });
+    await log.save();
 
     // Response
     res.json({
@@ -129,27 +142,31 @@ const refreshToken = async (req, res) => {
     await user.save();
 
     res.json({ accessToken, refreshToken: newRefreshToken }); // return both
-  } catch (error) {
+  } catch {
     res.status(403).json({ message: "Invalid or expired refresh token" });
   }
 };
 
 
 const logout = async (req, res) => {
-  const { userId } = req.body;
+  const userId = req.user.id;
 
   try {
     const user = await User.findById(userId);
+
     if (user) {
       user.refreshToken = null;
       await user.save();
+
+      return res.status(200).json({ message: "Logged out successfully" });
+    } else {
+      return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Logout error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
+
 module.exports = { registerUser, loginUser, refreshToken, logout };
-
-
