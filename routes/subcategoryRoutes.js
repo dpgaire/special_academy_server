@@ -10,6 +10,8 @@ const {
 } = require("../controllers/subcategoryController");
 const { subcategoryValidation } = require("../utils/validation");
 
+const cache = require("../middleware/cacheMiddleware");
+
 router.post(
   "/",
   protect,
@@ -17,8 +19,8 @@ router.post(
   subcategoryValidation,
   createSubcategory
 );
-router.get("/", protect, getSubcategories);
-router.get("/:id", protect, getSubcategoryById);
+router.get("/", protect, cache(3600), getSubcategories);
+router.get("/:id", protect, cache(3600), getSubcategoryById);
 router.put(
   "/:id",
   protect,

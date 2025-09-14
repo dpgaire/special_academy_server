@@ -15,10 +15,12 @@ const {
 const upload = require("../utils/upload");
 const imgbbUpload = require("../middleware/imgbbUpload");
 
-router.get("/", protect, authorize(["admin"]), getUsers);
+const cache = require("../middleware/cacheMiddleware");
+
+router.get("/", protect, authorize(["admin"]), cache(3600), getUsers);
 router.post("/", protect, authorize(["admin"]),
   registerValidation, createUser);
-router.get("/:id", protect, authorize(["admin"]), getUserById);
+router.get("/:id", protect, authorize(["admin"]), cache(3600), getUserById);
 router.put("/:id", protect, authorize(["admin"]),
   upload.single("image"), imgbbUpload, updateUserValidation, updateUser);
 
