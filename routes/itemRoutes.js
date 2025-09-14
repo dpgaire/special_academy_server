@@ -10,6 +10,8 @@ const {
 } = require("../controllers/itemController");
 const { itemValidation } = require("../utils/validation");
 
+const cache = require("../middleware/cacheMiddleware");
+
 router.post(
   "/",
   protect,
@@ -17,8 +19,8 @@ router.post(
   itemValidation,
   createItem
 );
-router.get("/", protect, getItems);
-router.get("/:id", protect, getItemById);
+router.get("/", protect, cache(3600), getItems);
+router.get("/:id", protect, cache(3600), getItemById);
 router.put(
   "/:id",
   protect,

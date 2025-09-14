@@ -10,9 +10,11 @@ const {
 } = require("../controllers/categoryController");
 const { categoryValidation } = require("../utils/validation");
 
+const cache = require("../middleware/cacheMiddleware");
+
 router.post("/", protect, authorize(["admin"]), categoryValidation, createCategory);
-router.get("/", protect, getCategories);
-router.get("/:id", protect, getCategoryById);
+router.get("/", protect, cache(3600), getCategories);
+router.get("/:id", protect, cache(3600), getCategoryById);
 router.put("/:id", protect, authorize(["admin"]), categoryValidation, updateCategory);
 router.delete("/:id", protect, authorize(["admin"]), deleteCategory);
 

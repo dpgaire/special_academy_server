@@ -8,6 +8,7 @@ const subcategoryRoutes = require("./routes/subcategoryRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
 const activityLogRoutes = require("./routes/activityLogRoutes");
+const statsRoutes = require("./routes/statsRoutes");
 
 
 connectDB();
@@ -47,6 +48,7 @@ app.use("/api/subcategories", subcategoryRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/activity-logs", activityLogRoutes);
+app.use("/api/stats", statsRoutes);
 
 // Mount routes
 app.use("/", (req, res) => {
