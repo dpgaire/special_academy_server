@@ -23,6 +23,8 @@
     "memory-cache": "^0.2.0",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "useragent": "^2.3.0"
   },
   "devDependencies": {
