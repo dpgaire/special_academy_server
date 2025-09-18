@@ -58,10 +58,10 @@ const swaggerUiOptions = {
   swaggerOptions: {
     persistAuthorization: true,
   },
-  customCssUrl: '/api-docs-assets/swagger-ui.css',
+  customCssUrl: '../api-docs-assets/swagger-ui.css',
   customJs: [
-    '/api-docs-assets/swagger-ui-bundle.js',
-    '/api-docs-assets/swagger-ui-standalone-preset.js'
+    '../api-docs-assets/swagger-ui-bundle.js',
+    '../api-docs-assets/swagger-ui-standalone-preset.js'
   ]
 };
 
