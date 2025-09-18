@@ -9,6 +9,8 @@ const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
 const activityLogRoutes = require("./routes/activityLogRoutes");
 const statsRoutes = require("./routes/statsRoutes");
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swaggerConfig');
 
 
 connectDB();
@@ -18,6 +20,7 @@ const app = express();
 const allowedOrigins = [
   "https://special-academy-admin-dashboard.vercel.app",
   "http://localhost:5173",
+  "http://localhost:5000"
 ];
 
 app.use(
@@ -49,6 +52,12 @@ app.use("/api/items", itemRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/activity-logs", activityLogRoutes);
 app.use("/api/stats", statsRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    persistAuthorization: true,
+  }
+}));
 
 // Mount routes
 app.use("/", (req, res) => {
