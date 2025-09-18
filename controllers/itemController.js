@@ -114,12 +114,47 @@ const deleteItem = async (req, res) => {
   }
 };
 
+// @desc    Search items
+// @route   GET /api/items/search
+// @access  Private
+const searchItems = async (req, res) => {
+  try {
+    const { q, startDate, endDate, sortBy, sortOrder } = req.query;
+
+    let query = {};
+
+    if (q) {
+      query.$text = { $search: q };
+    }
+
+    if (startDate && endDate) {
+      query.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    } else if (startDate) {
+      query.createdAt = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      query.createdAt = { $lte: new Date(endDate) };
+    }
+
+    let sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    }
+
+    const items = await Item.find(query).sort(sort).populate("subcategory_id");
+
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createItem,
   getItems,
   getItemById,
   updateItem,
   deleteItem,
+  searchItems,
 };
 
 

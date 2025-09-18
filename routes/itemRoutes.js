@@ -7,6 +7,7 @@ const {
   getItemById,
   updateItem,
   deleteItem,
+  searchItems,
 } = require("../controllers/itemController");
 const { itemValidation } = require("../utils/validation");
 
@@ -131,6 +132,59 @@ router.get("/", protect, cache(3600), getItems);
 
 /**
  * @swagger
+ * /api/items/search:
+ *   get:
+ *     summary: Search for items
+ *     tags: [Items]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Search query for full-text search on name and description
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for date range filter
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for date range filter
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Sort order
+ *     responses:
+ *       200:
+ *         description: A list of items that match the search criteria
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Item'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Some server error
+ */
+router.get("/search", protect, searchItems);
+
+/**
+ * @swagger
  * /api/items/{id}:
  *   get:
  *     summary: Get the item by id
@@ -159,6 +213,7 @@ router.get("/", protect, cache(3600), getItems);
  *         description: Some server error
  */
 router.get("/:id", protect, cache(3600), getItemById);
+
 
 /**
  * @swagger
@@ -237,4 +292,3 @@ router.put(
 router.delete("/:id", protect, authorize(["admin"]), deleteItem);
 
 module.exports = router;
-
