@@ -11,6 +11,7 @@ const activityLogRoutes = require("./routes/activityLogRoutes");
 const statsRoutes = require("./routes/statsRoutes");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swaggerConfig');
+const swaggerUiDist = require('swagger-ui-dist');
 
 
 connectDB();
@@ -53,11 +54,19 @@ app.use("/api/users", userRoutes);
 app.use("/api/activity-logs", activityLogRoutes);
 app.use("/api/stats", statsRoutes);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+const swaggerUiOptions = {
   swaggerOptions: {
     persistAuthorization: true,
-  }
-}));
+  },
+  customCssUrl: '/api-docs-assets/swagger-ui.css',
+  customJs: [
+    '/api-docs-assets/swagger-ui-bundle.js',
+    '/api-docs-assets/swagger-ui-standalone-preset.js'
+  ]
+};
+
+app.use('/api-docs-assets', express.static(swaggerUiDist.getAbsoluteFSPath()));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 
 // Mount routes
 app.use("/", (req, res) => {
