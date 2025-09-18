@@ -11,7 +11,7 @@ const activityLogRoutes = require("./routes/activityLogRoutes");
 const statsRoutes = require("./routes/statsRoutes");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swaggerConfig');
-const swaggerUiDist = require('swagger-ui-dist');
+
 
 
 connectDB();
@@ -58,14 +58,13 @@ const swaggerUiOptions = {
   swaggerOptions: {
     persistAuthorization: true,
   },
-  customCssUrl: '../api-docs-assets/swagger-ui.css',
+  customCssUrl: 'https://unpkg.com/swagger-ui-dist@5.17.0/swagger-ui.css',
   customJs: [
-    '../api-docs-assets/swagger-ui-bundle.js',
-    '../api-docs-assets/swagger-ui-standalone-preset.js'
+    'https://unpkg.com/swagger-ui-dist@5.17.0/swagger-ui-bundle.js',
+    'https://unpkg.com/swagger-ui-dist@5.17.0/swagger-ui-standalone-preset.js'
   ]
 };
 
-app.use('/api-docs-assets', express.static(swaggerUiDist.getAbsoluteFSPath()));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 
 // Mount routes
